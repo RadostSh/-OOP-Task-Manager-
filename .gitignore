@@ -1,0 +1,13 @@
+# Ignore everything
+*
+
+# Allow .gitignore file itself
+!.gitignore
+
+# Allow all directories
+!*/
+
+# Allow C++ source and header files in any directory
+!**/*.cpp
+!**/*.hpp
+!**/*.h
