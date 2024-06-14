@@ -49,15 +49,17 @@ void UsersRepository::logInfo(const MyString& username, const MyString& password
 	int userIndex = find(username);
 
 	if (userIndex == -1) {
-		std::cout << "Sorry, username is not found! Try again!";
+		std::cout << "Sorry, username is not found! Try again!" << std::endl;
+		return;
 	}
 
 	if (_users[userIndex].matchPassword(password)) {
 		loggedUser = userIndex;
-		std::cout << "Registered successfully!";
+		std::cout << "Welcome back, " << username << std::endl;
+		return;
 	}
 
-	std::cout << "Wrong password! Try again!";
+	std::cout << "Wrong password! Try again!" << std::endl;
 }
 
 const User* UsersRepository::getLoggedUserConst() const {

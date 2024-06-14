@@ -8,7 +8,7 @@ void run() {
 	command.readFromFile();
 	MyString commandText;
 
-	std::cout << "Welcome to Task Manager!\n Choose an option: signup or login" << std::endl;
+	std::cout << "Welcome to Task Manager!\nChoose an option: signup or login" << std::endl;
 
 	while (true) {
 
@@ -22,6 +22,17 @@ void run() {
 			std::cin >> password;
 
 			command.regist(username, password);
+			std::cout << std::endl;
+		}
+
+		if (commandText == "login") {
+			MyString username, password;
+			std::cout << "Username: ";
+			std::cin >> username;
+			std::cout << "Password: ";
+			std::cin >> password;
+
+			command.login(username, password);
 			std::cout << std::endl;
 		}
 	}

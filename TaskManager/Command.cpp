@@ -12,6 +12,7 @@ void Command::regist(const MyString& username, const MyString& password) {
 
 	if (usersRepository->find(username) != -1) {
 		std::cout << "Username already exsits!" << std::endl;
+		std::cout << std::endl;
 		return;
 	}
 
@@ -22,6 +23,17 @@ void Command::regist(const MyString& username, const MyString& password) {
 		std::cout << "Registered successfully!" << std::endl;
 		delete user;
 	}
+}
+
+void Command::login(const MyString& username, const MyString& password) {
+	if (usersRepository->getLoggedUserConst())
+	{
+		std::cout << "User is already logged!" << std::endl;
+		std::cout << std::endl;
+		return;
+	}
+
+	usersRepository->logInfo(username, password);
 }
 
 void Command::writeToFile() const
