@@ -36,6 +36,14 @@ void Command::login(const MyString& username, const MyString& password) {
 	usersRepository->logInfo(username, password);
 }
 
+void Command::logout() {
+	if(usersRepository->getLoggedUserConst()) {
+		usersRepository->logOutUser();
+		std::cout << "Logged out! Goodbye!" << std::endl;
+		std::cout << std::endl;
+	}
+}
+
 void Command::writeToFile() const
 {
 	std::ofstream ofs("TaskManager.dat", std::ios::out | std::ios::binary);

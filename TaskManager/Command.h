@@ -11,6 +11,8 @@ public:
 	void regist(const MyString& username, const MyString& password);
 	void login(const MyString& username, const MyString& password);
 
+	void logout();
+
 	void writeToFile() const;
 	void readFromFile();
 

@@ -23,9 +23,8 @@ void run() {
 
 			command.regist(username, password);
 			std::cout << std::endl;
-		}
-
-		if (commandText == "login") {
+		} 
+		else if (commandText == "login") {
 			MyString username, password;
 			std::cout << "Username: ";
 			std::cin >> username;
@@ -35,8 +34,14 @@ void run() {
 			command.login(username, password);
 			std::cout << std::endl;
 		}
-	}
-	
-	
-
+		else if (commandText == "logout") {
+			command.logout();
+		}
+		else if (commandText == "exit") {
+			break;
+		}
+		else {
+			throw std::invalid_argument("Invalid command");
+		}
+	}	
 }
