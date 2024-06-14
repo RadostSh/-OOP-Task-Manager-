@@ -8,6 +8,8 @@ void run() {
 	command.readFromFile();
 	MyString commandText;
 
+	std::cout << "Welcome to Task Manager!\n Choose an option: signup or login" << std::endl;
+
 	while (true) {
 
 		std::cin >> commandText;
@@ -20,7 +22,7 @@ void run() {
 			std::cin >> password;
 
 			command.regist(username, password);
-			std::cout << "Registered successfully!" << std::endl;
+			std::cout << std::endl;
 		}
 	}
 	
