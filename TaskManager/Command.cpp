@@ -2,6 +2,7 @@
 
 Command::Command() {
 	usersRepository = UsersRepository::getInstance();
+	tasksRepository = TasksRepository::getInstance();
 }
 
 void Command::regist(const MyString& username, const MyString& password) {
@@ -32,8 +33,50 @@ void Command::login(const MyString& username, const MyString& password) {
 		std::cout << std::endl;
 		return;
 	}
-
 	usersRepository->logInfo(username, password);
+}
+
+void Command::addTask(const MyString& name, const std::tm& dueDate, const MyString& desc) {
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user!" << std::endl;
+		return;
+	}
+
+	if (tasksRepository->find(name)) {
+		std::cout << "Task already exsits!" << std::endl;
+		std::cout << std::endl;
+		return;
+	}
+	
+	const Task* task = new Task(name, dueDate, desc);
+
+	if (task) {
+		tasksRepository->addTask(*task);
+		std::cout << "Task added successfully!" << std::endl;
+		delete task;
+	}
+}
+
+void Command::updateTaskName(unsigned id, const MyString& name) { //demo
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user to change the task!" << std::endl;
+		return;
+	}
+
+	Task* task = tasksRepository->find(name);
+
+	std::cout << "Enter new task name: " << std::endl;
+	char buff[1024];
+	std::cin.ignore();
+	std::cin.getline(buff, 1024);
+	MyString newName = buff;
+
+	task->setName(newName);
+
+	std::cout << "Task with ID " << task->getId() << " has new name:" << task->getName();
+	std::cout << std::endl;
 }
 
 void Command::logout() {
@@ -50,13 +93,14 @@ void Command::writeToFile() const
 	if (!ofs.is_open())
 		throw "Error";
 
-	size_t countOfUsers = _users.size();
-	ofs.write((const char*)&countOfUsers, sizeof(size_t));
+	const MyVector<User>& users = usersRepository->getUsers();
+	unsigned countOfUsers = users.size();
+	ofs.write((const char*)&countOfUsers, sizeof(unsigned));
 	for (int i = 0; i < countOfUsers; i++)
-		_users[i].writeToFile(ofs);
-	/*size_t countOfTopics = _tasks.size();
-	ofs.write((const char*)&countOfTopics, sizeof(size_t));
-	for (int i = 0; i < countOfTopics; i++)
+		users[i].writeToFile(ofs);
+	/*size_t countOfTasks = _tasks.size();
+	ofs.write((const char*)&countOfTasks, sizeof(size_t));*/
+	/*for (int i = 0; i < countOfTasks; i++)
 		_tasks[i].writeToFile(ofs);*/
 
 	ofs.clear();
@@ -68,21 +112,20 @@ void Command::readFromFile()
 	if (!ifs.is_open())
 		throw "Error";
 
-	size_t countOfUsers;
-	ifs.read((char*)&countOfUsers, sizeof(size_t));
-	for (int i = 0; i < countOfUsers; i++)
-	{
+	unsigned countOfUsers = 0;
+	ifs.read((char*)&countOfUsers, sizeof(unsigned));
+	for (int i = 0; i < countOfUsers; i++) {
 		User read;
 		read.readFromFiLe(ifs);
 		_users.push_back(read);
 	}
-	//size_t countOfTopics;
-	//ifs.read((char*)&countOfTopics, sizeof(size_t));
-	//for (int i = 0; i < countOfTopics; i++)
+	/*size_t countOfTasks;
+	ifs.read((char*)&countOfTasks, sizeof(size_t));*/
+	//for (int i = 0; i < countOfTasks; i++)
 	//{
-	//	Task readT;
-	//	readT.readFromFiLe(ifs);
-	//	_tasks.push_back(readT);
+	//	Task read;
+	//	read.readFromFiLe(ifs);
+	//	_tasks.push_back(read);
 	//}
 
 	ifs.clear();

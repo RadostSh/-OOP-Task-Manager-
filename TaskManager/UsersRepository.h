@@ -14,7 +14,7 @@ public:
 	const User* getLoggedUserConst() const; //not change user data
 	User* getLoggedUser(); // change user data
 	void logOutUser();
-
+	const MyVector<User> getUsers() const;
 private:
 	MyVector<User> _users;
 	int loggedUser = -1;

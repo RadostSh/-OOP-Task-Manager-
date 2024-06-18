@@ -42,13 +42,15 @@ bool User::matchPassword(const MyString& password) const {
 void User::writeToFile(std::ofstream& ofs) const {
 	writeStringToFile(ofs, _username);
 	writeStringToFile(ofs, _password);
-	//ofs.write((const char*)&_userID, sizeof(unsigned));
+	ofs.write((const char*)&_userID, sizeof(unsigned));
+	ofs.write((const char*)&idInSystem, sizeof(unsigned));
 	//
 }
 
 void User::readFromFiLe(std::ifstream& ifs) {
 	_username = readStringFromFile(ifs);
 	_password = readStringFromFile(ifs);
-	//ifs.read((char*)&_userID, sizeof(unsigned));
+	ifs.read((char*)&_userID, sizeof(unsigned));
+	ifs.read((char*)&idInSystem, sizeof(unsigned));
 	//
 }

@@ -73,3 +73,7 @@ User* UsersRepository::getLoggedUser() {
 void UsersRepository::logOutUser() {
 	loggedUser = -1;
 }
+
+const MyVector<User> UsersRepository::getUsers() const {
+	return _users;
+}

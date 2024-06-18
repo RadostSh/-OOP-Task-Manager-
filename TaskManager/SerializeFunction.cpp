@@ -7,6 +7,7 @@ void writeStringToFile(std::ofstream& ofs, const MyString& str)
 
 	ofs.write(str.c_str(), sizeof(char) * len);
 }
+
 MyString readStringFromFile(std::ifstream& ifs)
 {
 	int len = 0;
