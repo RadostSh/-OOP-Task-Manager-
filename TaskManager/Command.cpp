@@ -48,17 +48,19 @@ void Command::addTask(const MyString& name, const std::tm& dueDate, const MyStri
 		std::cout << std::endl;
 		return;
 	}
-	
-	const Task* task = new Task(name, dueDate, desc);
-
-	if (task) {
-		tasksRepository->addTask(*task);
-		std::cout << "Task added successfully!" << std::endl;
-		delete task;
+	static bool isRandInitialized = false;
+	if (!isRandInitialized) {
+		srand(time(NULL));
+		isRandInitialized = true;
 	}
+	int id = rand();
+
+	Task task(name, dueDate, desc, id);
+	tasksRepository->addTask(task);
+	std::cout << "Task added successfully!" << std::endl;
 }
 
-void Command::updateTaskName(unsigned id, const MyString& name) { //demo
+void Command::updateTaskName(const MyString& name) {
 	const User* user = usersRepository->getLoggedUserConst();
 	if (!user) {
 		std::cout << "User is not logged! Please, log in or register new user to change the task!" << std::endl;
@@ -77,6 +79,92 @@ void Command::updateTaskName(unsigned id, const MyString& name) { //demo
 
 	std::cout << "Task with ID " << task->getId() << " has new name:" << task->getName();
 	std::cout << std::endl;
+}
+
+void Command::updateTaskName(unsigned id) {
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user to change the task!" << std::endl;
+		return;
+	}
+
+	Task* task = tasksRepository->find(id);
+
+	std::cout << "Enter new task name: " << std::endl;
+	char buff[1024];
+	std::cin.ignore();
+	std::cin.getline(buff, 1024);
+	MyString newName = buff;
+
+	task->setName(newName);
+
+	std::cout << "Task with ID " << task->getId() << " has new name:" << task->getName();
+	std::cout << std::endl;
+}
+
+void Command::startTask(unsigned id) {
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user!" << std::endl;
+		return;
+	}
+
+	tasksRepository->startTask(id);
+	std::cout << "Task started successfully!" << std::endl;
+}
+
+void Command::updateTaskDescription(const MyString& name) {
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user!" << std::endl;
+		return;
+	}
+
+	Task* task = tasksRepository->find(name);
+
+	std::cout << "Enter new task description: " << std::endl;
+	char buff[1024];
+	std::cin.ignore();
+	std::cin.getline(buff, 1024);
+	MyString newDesc = buff;
+
+	task->setDescription(newDesc);
+
+	std::cout << "Task description is change successfully!" << std::endl;
+	std::cout << std::endl;
+}
+
+void Command::updateTaskDescription(unsigned id) {
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user!" << std::endl;
+		return;
+	}
+
+	Task* task = tasksRepository->find(id);
+
+	std::cout << "Enter new task description: " << std::endl;
+	char buff[1024];
+	std::cin.ignore();
+	std::cin.getline(buff, 1024);
+	MyString newDesc = buff;
+
+	task->setDescription(newDesc);
+
+	std::cout << "Task description is change successfully!" << std::endl;
+	std::cout << std::endl;
+}
+
+void Command::addTaskToDashboard(unsigned id) {
+
+}
+
+void Command::removeTaskFromDashboard(unsigned id) {
+
+}
+
+void Command::deleteTask(unsigned id) {
+
 }
 
 void Command::logout() {

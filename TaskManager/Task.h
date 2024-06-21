@@ -9,7 +9,7 @@
 class Task {
 public:
 	Task() = default;
-	Task(const MyString& name, const std::tm& due_data, const MyString& description);
+	Task(const MyString& name, const std::tm& due_data, const MyString& description, unsigned id);
 	
 	int getId() const;
 	const MyString& getName() const;
@@ -19,6 +19,7 @@ public:
 
 	void setNewStatus(Status status);
 	void setName(const MyString& name);
+	void setDescription(const MyString& desc);
 	bool operator==(const Task& other) const;
 
 private:

@@ -1,10 +1,11 @@
 #include "Task.h"
 
-Task::Task(const MyString& name, const std::tm& due_data, const MyString& description) {
+Task::Task(const MyString& name, const std::tm& due_data, const MyString& description, unsigned id) {
 	_name = name;
 	_due_data = due_data;
 	_status = Status::ON_HOLD;
 	_description = description;
+	_id = id;
 }
 
 int Task::getId() const {
@@ -33,6 +34,10 @@ void Task::setName(const MyString& name) {
 
 void Task::setNewStatus(Status status) {
 	_status = status;
+}
+
+void Task::setDescription(const MyString& desc) {
+	_description = desc;
 }
 
 bool Task::operator==(const Task& other) const {

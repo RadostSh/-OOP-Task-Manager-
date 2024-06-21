@@ -1,6 +1,6 @@
 #pragma once
 #include "MyString.h"
 
-class HelperFunction {
-
-};
+bool isDigit(char s);
+unsigned getDigitFromChar(char s);
+unsigned getNumFromStr(const MyString& str);

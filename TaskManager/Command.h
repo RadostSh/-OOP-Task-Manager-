@@ -12,8 +12,14 @@ public:
 	void regist(const MyString& username, const MyString& password);
 	void login(const MyString& username, const MyString& password);
 	void addTask(const MyString& name, const std::tm& dueDate, const MyString& desc);
-	void updateTaskName(unsigned id, const MyString& name);
-
+	void updateTaskName(const MyString& name);
+	void updateTaskName(unsigned id);
+	void startTask(unsigned id);
+	void updateTaskDescription(const MyString& name);
+	void updateTaskDescription(unsigned id);
+	void addTaskToDashboard(unsigned id);
+	void removeTaskFromDashboard(unsigned id);
+	void deleteTask(unsigned id);
 	void logout();
 
 	void writeToFile() const;

@@ -65,21 +65,91 @@ void run() {
 			std::cout << std::endl;
 		}
 		else if (commandText == "update-task-name") {
+			std::cout << "Enter task ID or task name: ";
+			char buff[1024];
+			std::cin.ignore();
+			std::cin.getline(buff, 1024);
+			MyString input = buff;
+			if (isDigit(input[0])) {
+				command.updateTaskName(getNumFromStr(input));
+			}
+			else {
+				command.updateTaskName(input);
+			}
+			std::cout << std::endl;
+		}
+		else if (commandText == "start-task") {
 			std::cout << "Enter task ID: ";
 			unsigned id;
 			std::cin >> id;
 
+			command.startTask(id);
+			std::cout << std::endl;
+		}
+		else if (commandText == "update-task-description") {
+			std::cout << "Enter task ID or task name: ";
 			char buff[1024];
 			std::cin.ignore();
-
-			std::cout << "Enter task name: ";
 			std::cin.getline(buff, 1024);
-			MyString name = buff;
-
-			command.updateTaskName(id, name);
+			MyString input = buff;
+			if (isDigit(input[0])) {
+				command.updateTaskDescription(getNumFromStr(input));
+			}
+			else {
+				command.updateTaskDescription(input);
+			}
+			std::cout << std::endl;
 		}
+		else if (commandText == "add-task-to-dashboard") {
+			std::cout << "Enter task ID: ";
+			unsigned id;
+			std::cin >> id;
 
+			command.addTaskToDashboard(id);
+			std::cout << std::endl;
+		}
+		else if (commandText == "remove-task-from-dashboard") {
+			std::cout << "Enter task ID: ";
+			unsigned id;
+			std::cin >> id;
 
+			command.removeTaskFromDashboard(id);
+			std::cout << std::endl;
+		}
+		else if (commandText == "delete-task") {
+			std::cout << "Enter task ID: ";
+			unsigned id;
+			std::cin >> id;
+
+			command.deleteTask(id);
+			std::cout << std::endl;
+		}
+		else if (commandText == "get-task") {
+			std::cout << "Enter task ID or task name: ";
+			char buff[1024];
+			std::cin.ignore();
+			std::cin.getline(buff, 1024);
+			MyString input = buff;
+			if (isDigit(input[0])) {
+				command.updateTaskDescription(getNumFromStr(input));//
+			}
+			else {
+				command.updateTaskDescription(input);//
+			}
+			std::cout << std::endl;
+		}
+		else if (commandText == "list-tasks") {
+
+		}
+		else if (commandText == "list-completed-tasks") {
+
+		}
+		else if (commandText == "list-dashboard") {
+
+		}
+		else if (commandText == "finish-task") {
+
+		}
 		else if (commandText == "logout") {
 			command.logout();
 		}

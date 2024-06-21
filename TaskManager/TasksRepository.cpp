@@ -18,9 +18,10 @@ int TasksRepository::findTaskIndex(int id) {
 	unsigned tasksCount = _tasks.size();
 
 	for (size_t index = 0; index < tasksCount; index++) {
-		return index;
+		if (_tasks[index].getId() == id) {
+			return index;
+		}
 	}
-
 	return -1;
 }
 
@@ -46,4 +47,11 @@ void TasksRepository::addTask(const Task& task) {
 
 const MyVector<Task> TasksRepository::getTask() const {
 	return _tasks;
+}
+
+void TasksRepository::startTask(unsigned id) {
+	int index = findTaskIndex(id);
+	if (index != -1) {
+		_tasks[index].setNewStatus(Status::IN_PROCESS);
+	}
 }
