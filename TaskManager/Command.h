@@ -2,6 +2,7 @@
 #include <fstream>
 #include "User.h"
 #include "Task.h"
+#include "Dashboardd.h"
 #include "UsersRepository.h"
 #include "TasksRepository.h"
 

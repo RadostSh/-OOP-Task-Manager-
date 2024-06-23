@@ -47,7 +47,7 @@ void User::writeToFile(std::ofstream& ofs) const {
 	//
 }
 
-void User::readFromFiLe(std::ifstream& ifs) {
+void User::readFromFile(std::ifstream& ifs) {
 	_username = readStringFromFile(ifs);
 	_password = readStringFromFile(ifs);
 	ifs.read((char*)&_userID, sizeof(unsigned));

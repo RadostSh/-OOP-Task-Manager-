@@ -22,3 +22,10 @@ unsigned getNumFromStr(const MyString& str)
 	}
 	return res;
 }
+
+// Utility function to convert std::tm to std::time_t
+std::time_t toTimeT(const std::tm& t) {
+	std::tm temp = t;
+	return std::mktime(&temp);
+}
+

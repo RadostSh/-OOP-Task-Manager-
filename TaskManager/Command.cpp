@@ -156,10 +156,49 @@ void Command::updateTaskDescription(unsigned id) {
 }
 
 void Command::addTaskToDashboard(unsigned id) {
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user!" << std::endl;
+		return;
+	}
 
+	Task* task = tasksRepository->find(id);
+
+	if (!task) {
+		std::cout << "Task not found!" << std::endl;
+		return;
+	}
+
+	if (task->getStatus() == Status::OVERDUE) {
+		std::cout << "Cannot add task to dashboard. Task is overdue!" << std::endl;
+		return;
+	}
+
+	unsigned indexOfUser = user->getUserID();
+	Dashboard dashboard(indexOfUser);
+	dashboard.addTask(*task);
+
+	std::cout << "Task added to dashboard successfully!" << std::endl;
 }
 
 void Command::removeTaskFromDashboard(unsigned id) {
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user!" << std::endl;
+		return;
+	}
+
+	Task* task = tasksRepository->find(id);
+	if (!task) {
+		std::cout << "Task with ID " << id << " not found!" << std::endl;
+		return;
+	}
+
+	unsigned indexOfUser = user->getUserID();
+	Dashboard dashboard(indexOfUser);
+	dashboard.removeTask(id);
+
+	std::cout << "Task removed from dashboard successfully!" << std::endl;
 
 }
 
@@ -204,7 +243,7 @@ void Command::readFromFile()
 	ifs.read((char*)&countOfUsers, sizeof(unsigned));
 	for (int i = 0; i < countOfUsers; i++) {
 		User read;
-		read.readFromFiLe(ifs);
+		read.readFromFile(ifs);
 		_users.push_back(read);
 	}
 	/*size_t countOfTasks;

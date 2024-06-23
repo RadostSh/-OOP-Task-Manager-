@@ -45,7 +45,7 @@ void TasksRepository::addTask(const Task& task) {
 	_tasks.push_back(task);
 }
 
-const MyVector<Task> TasksRepository::getTask() const {
+const MyVector<Task>& TasksRepository::getTask() const {
 	return _tasks;
 }
 

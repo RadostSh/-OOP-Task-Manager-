@@ -38,7 +38,7 @@ void run() {
 		//option choose - write later
 
 		else if (commandText == "add-task") {
-			char buff[1024]; //global 1024
+			char buff[1024]; 
 			std::cin.ignore();
 
 			std::cout << "Enter task name: ";

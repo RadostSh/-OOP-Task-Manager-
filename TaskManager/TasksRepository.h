@@ -13,7 +13,7 @@ public:
 	
 	void addTask(const Task& task);
 	void startTask(unsigned id);
-	const MyVector<Task> getTask() const;
+	const MyVector<Task>& getTask() const;
 private:
 	MyVector<Task> _tasks;
 	static TasksRepository* instance;

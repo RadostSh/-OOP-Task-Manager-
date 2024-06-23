@@ -1,9 +1,12 @@
 #pragma once
 #include "User.h"
+#include "Task.h"
+#include "Dashboardd.h"
+#include "TasksRepository.h"
 
 class UsersRepository {
 public: 
-	UsersRepository() = default;
+	UsersRepository();
 	static UsersRepository* getInstance();
 	static void freeInstance();
 
@@ -15,6 +18,8 @@ public:
 	User* getLoggedUser(); // change user data
 	void logOutUser();
 	const MyVector<User> getUsers() const;
+protected:
+	TasksRepository* tasksRepository;
 private:
 	MyVector<User> _users;
 	int loggedUser = -1;

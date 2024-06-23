@@ -1,5 +1,9 @@
 #include "UsersRepository.h"
 
+UsersRepository::UsersRepository() {
+	tasksRepository = TasksRepository::getInstance();
+}
+
 UsersRepository* UsersRepository::instance = nullptr;
 
 UsersRepository* UsersRepository::getInstance() {
@@ -56,6 +60,18 @@ void UsersRepository::logInfo(const MyString& username, const MyString& password
 	if (_users[userIndex].matchPassword(password)) {
 		loggedUser = userIndex;
 		std::cout << "Welcome back, " << username << std::endl;
+
+		User& user = _users[userIndex];
+		std::tm currentDate;
+		std::time_t t = std::time(nullptr);
+
+		// Use localtime_s to safely convert time_t to tm
+		localtime_s(&currentDate, &t);
+		
+		unsigned indexOfUser = user.getUserID();
+		Dashboard dashboard(indexOfUser);
+		dashboard.updateDashboard(tasksRepository->getTask(), currentDate);
+
 		return;
 	}
 

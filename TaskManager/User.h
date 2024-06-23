@@ -17,7 +17,7 @@ public:
 	bool matchPassword(const MyString& password) const;
 
 	void writeToFile(std::ofstream& ofs) const;
-	void readFromFiLe(std::ifstream& ifs);
+	void readFromFile(std::ifstream& ifs);
 
 private:
 	MyString _username = "Unknown";
