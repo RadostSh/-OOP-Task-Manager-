@@ -203,7 +203,94 @@ void Command::removeTaskFromDashboard(unsigned id) {
 }
 
 void Command::deleteTask(unsigned id) {
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user!" << std::endl;
+		return;
+	}
 
+	Task* task = tasksRepository->find(id);
+	if (!task) {
+		std::cout << "Task with ID " << id << " not found!" << std::endl;
+		return;
+	}
+
+	tasksRepository->deleteTask(id);
+	std::cout << "Task delete successfully!" << std::endl;
+}
+
+void Command::getTask(const MyString& name) {
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user!" << std::endl;
+		return;
+	}
+
+	const MyVector<Task>& allTasks = tasksRepository->getTask();
+	unsigned tasksCount = allTasks.size();
+
+	for (size_t i = 0; i < tasksCount - 1; i++) {
+		size_t minIndex = i;
+
+		for (size_t j = i + 1; j < tasksCount; ++j) {
+			if (allTasks[j].getId() < allTasks[minIndex].getId()) {
+				minIndex = j;
+			}
+		}
+
+		if (minIndex != i) {
+			//std::swap(allTasks[i], allTasks[minIndex]);
+		}
+	}
+
+	Task* task = tasksRepository->find(name);
+
+	if (!task) {
+		std::cout << "Task with name \"" << name << "\" not found!" << std::endl;
+		return;
+	}
+
+	const std::tm* dueDate = &task->getDueDate();
+
+	std::cout << "Task name: " << task->getName() << std::endl;
+	std::cout << "Task ID: " << task->getId() << std::endl;
+	std::cout << "Due date: " << std::asctime(dueDate) << std::endl;
+	std::cout << "Status: " << task->getStatusStr() << std::endl;
+	std::cout << "Task desc: " << task->getDescription() << std::endl;
+}
+
+void Command::getTask(unsigned id) {
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user!" << std::endl;
+		return;
+	}
+
+	Task* task = tasksRepository->find(id);
+
+	if (!task) {
+		std::cout << "Task with ID " << id << " not found!" << std::endl;
+		return;
+	}
+
+	const std::tm* dueDate = &task->getDueDate();
+
+	std::cout << "Task name: " << task->getName() << std::endl;
+	std::cout << "Task ID: " << task->getId() << std::endl;
+	std::cout << "Due date: " << std::asctime(dueDate) << std::endl;
+	std::cout << "Status: " << task->getStatusStr() << std::endl;
+	std::cout << "Task desc: " << task->getDescription() << std::endl;
+}
+
+void Command::finishTask(unsigned id) {
+	const User* user = usersRepository->getLoggedUserConst();
+	if (!user) {
+		std::cout << "User is not logged! Please, log in or register new user!" << std::endl;
+		return;
+	}
+
+	tasksRepository->startTask(id);
+	std::cout << "Task finished successfully!" << std::endl;
 }
 
 void Command::logout() {

@@ -55,3 +55,21 @@ void TasksRepository::startTask(unsigned id) {
 		_tasks[index].setNewStatus(Status::IN_PROCESS);
 	}
 }
+
+void TasksRepository::deleteTask(unsigned id) {
+
+	for (size_t i = 0; i < _tasks.size(); ++i) {
+		if (_tasks[i].getId() == id) {
+			_tasks.erase(i);
+			break;
+		}
+	}
+}
+
+
+void TasksRepository::finishTask(unsigned id) {
+	int index = findTaskIndex(id);
+	if (index != -1) {
+		_tasks[index].setNewStatus(Status::OVERDUE);
+	}
+}

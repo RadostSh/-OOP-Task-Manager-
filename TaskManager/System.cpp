@@ -131,10 +131,10 @@ void run() {
 			std::cin.getline(buff, 1024);
 			MyString input = buff;
 			if (isDigit(input[0])) {
-				command.updateTaskDescription(getNumFromStr(input));//
+				command.getTask(getNumFromStr(input));
 			}
 			else {
-				command.updateTaskDescription(input);//
+				command.getTask(input);
 			}
 			std::cout << std::endl;
 		}
@@ -148,7 +148,12 @@ void run() {
 
 		}
 		else if (commandText == "finish-task") {
+			std::cout << "Enter task ID: ";
+			unsigned id;
+			std::cin >> id;
 
+			command.finishTask(id);
+			std::cout << std::endl;
 		}
 		else if (commandText == "logout") {
 			command.logout();

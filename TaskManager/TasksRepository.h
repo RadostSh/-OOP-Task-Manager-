@@ -13,6 +13,9 @@ public:
 	
 	void addTask(const Task& task);
 	void startTask(unsigned id);
+	void deleteTask(unsigned id);
+
+	void finishTask(unsigned id);
 	const MyVector<Task>& getTask() const;
 private:
 	MyVector<Task> _tasks;

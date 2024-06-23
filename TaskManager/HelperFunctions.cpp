@@ -28,4 +28,3 @@ std::time_t toTimeT(const std::tm& t) {
 	std::tm temp = t;
 	return std::mktime(&temp);
 }
-

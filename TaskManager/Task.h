@@ -22,6 +22,8 @@ public:
 	void setDescription(const MyString& desc);
 	bool operator==(const Task& other) const;
 
+	const MyString& getStatusStr() const;
+
 private:
 	int _id;
 	MyString _name;

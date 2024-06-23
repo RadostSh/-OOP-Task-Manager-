@@ -5,6 +5,7 @@
 #include "Dashboardd.h"
 #include "UsersRepository.h"
 #include "TasksRepository.h"
+#pragma warning(disable : 4996)
 
 class Command {
 public:
@@ -21,6 +22,10 @@ public:
 	void addTaskToDashboard(unsigned id);
 	void removeTaskFromDashboard(unsigned id);
 	void deleteTask(unsigned id);
+	void getTask(const MyString& name);
+	void getTask(unsigned id);
+
+	void finishTask(unsigned id);
 	void logout();
 
 	void writeToFile() const;

@@ -46,3 +46,18 @@ bool Task::operator==(const Task& other) const {
 		_due_data.tm_mon == other._due_data.tm_mon &&
 		_due_data.tm_mday == other._due_data.tm_mday;
 }
+
+const MyString& Task::getStatusStr() const {
+	switch (_status) {
+	case Status::DONE:
+		return "DONE";
+	case Status::IN_PROCESS:
+		return "IN_PROCESS";
+	case Status::ON_HOLD:
+		return "ON_HOLD";
+	case Status::OVERDUE:
+		return "OVERDUE";
+	default:
+		return "Unknown";
+	}
+}
