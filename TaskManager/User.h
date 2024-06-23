@@ -9,10 +9,9 @@ public:
 
 	const MyString& getUsername() const;
 	unsigned getUserID() const;
+	const MyString& getPassword() const;
 	void setUsername(const MyString& username);
 	void setPassword(const MyString& password);
-
-	//void printUserInfo() const;
 
 	bool matchPassword(const MyString& password) const;
 

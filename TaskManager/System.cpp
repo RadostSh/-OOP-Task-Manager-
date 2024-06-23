@@ -139,13 +139,16 @@ void run() {
 			std::cout << std::endl;
 		}
 		else if (commandText == "list-tasks") {
+			std::cout << "Enter date or username: ";
 
 		}
 		else if (commandText == "list-completed-tasks") {
-
+			command.listCompletedTasks();
+			std::cout << std::endl;
 		}
 		else if (commandText == "list-dashboard") {
-
+			command.listDashboard();
+			std::cout << std::endl;
 		}
 		else if (commandText == "finish-task") {
 			std::cout << "Enter task ID: ";
@@ -153,6 +156,83 @@ void run() {
 			std::cin >> id;
 
 			command.finishTask(id);
+			std::cout << std::endl;
+		}
+		else if (commandText == "add-collaboration") {
+			MyString name;
+			std::cout << "Name: ";
+			std::cin >> name;
+
+			command.addCollaboration(name);
+			std::cout << std::endl;
+		}
+		else if (commandText == "delete-collaboration") {
+			MyString name;
+			std::cout << "Name: ";
+			std::cin >> name;
+
+			command.deleteCollaboration(name);
+			std::cout << std::endl;
+		}
+		else if (commandText == "list-collaborations") {
+			command.listCollaborations();
+			std::cout << std::endl;
+		}
+		else if (commandText == "add-user") {
+			MyString collabName;
+			std::cout << "Collaboration name: ";
+			std::cin >> collabName;
+
+			MyString username;
+			std::cout << "Username: ";
+			std::cin >> username;
+
+			command.addUser(collabName, username);
+			std::cout << std::endl;
+		}
+		else if (commandText == "assign-task") {
+
+			char buff[1024];
+			std::cin.ignore();
+
+			std::cout << "Enter collaboration name: ";
+			std::cin.getline(buff, 1024);
+			MyString collabName = buff;
+
+			std::cout << "Enter username: ";
+			std::cin.getline(buff, 1024);
+			MyString username = buff;
+
+			std::cout << "Enter task name: ";
+			std::cin.getline(buff, 1024);
+			MyString name = buff;
+
+			std::cout << "Enter due date (YYYY-MM-DD): ";
+			std::cin.getline(buff, 1024);
+			MyString dateStr = buff;
+			std::tm dueDate = {};
+			std::istringstream ss(dateStr.c_str());
+			ss >> std::get_time(&dueDate, "%Y-%m-%d");
+
+			if (ss.fail()) {
+				std::cout << "Date format is invalid! Please use YYYY-MM-DD" << std::endl;
+				return;
+			}
+
+			std::cout << "Enter description: ";
+			std::cin.getline(buff, 1024);
+			MyString desc = buff;
+
+			command.assignTask(collabName, username, name, dueDate, desc);
+			std::cout << std::endl;
+
+		}
+		else if (commandText == "list-tasks") {
+			MyString collabName;
+			std::cout << "Collaboration name: ";
+			std::cin >> collabName;
+
+			command.listTasks(collabName);
 			std::cout << std::endl;
 		}
 		else if (commandText == "logout") {

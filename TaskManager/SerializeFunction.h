@@ -7,4 +7,3 @@
 
 void writeStringToFile(std::ofstream& ofs, const MyString& str);
 MyString readStringFromFile(std::ifstream& ifs);
-

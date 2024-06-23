@@ -24,6 +24,9 @@ public:
 
 	const MyString& getStatusStr() const;
 
+	void writeToFile(std::ofstream& ofs) const;
+	void readFromFile(std::ifstream& ifs);
+
 private:
 	int _id;
 	MyString _name;

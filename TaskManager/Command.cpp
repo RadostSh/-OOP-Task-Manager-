@@ -3,6 +3,7 @@
 Command::Command() {
 	usersRepository = UsersRepository::getInstance();
 	tasksRepository = TasksRepository::getInstance();
+	collaborationsRepository = CollaborationsRepository::getInstance();
 }
 
 void Command::regist(const MyString& username, const MyString& password) {
@@ -291,6 +292,155 @@ void Command::finishTask(unsigned id) {
 
 	tasksRepository->startTask(id);
 	std::cout << "Task finished successfully!" << std::endl;
+}
+
+void Command::addCollaboration(const MyString& name) {
+	const User* creator = usersRepository->getLoggedUserConst();
+	if (!creator) {
+		std::cout << "User is not logged in. Please log in or register." << std::endl;
+		return;
+	}
+
+	// Check if a collaboration with the same name already exists
+	if (collaborationsRepository->findCollaboration(name)) {
+		std::cout << "Collaboration already exists." << std::endl;
+		return;
+	}
+
+	static bool isRandInitialized = false;
+	if (!isRandInitialized) {
+		srand(time(NULL));
+		isRandInitialized = true;
+	}
+	int id = rand();
+
+	Collaboration collaboration(name, creator->getUsername(), id);
+	collaboration.addUser(*creator); // Add the creator as the first member
+	collaborationsRepository->addCollaboration(collaboration);
+
+	std::cout << "Collaboration added successfully!" << std::endl;
+}
+
+void Command::deleteCollaboration(const MyString& name) {
+	const User* loggedInUser = usersRepository->getLoggedUserConst();
+	if (!loggedInUser) {
+		std::cout << "User is not logged in. Please log in or register." << std::endl;
+		return;
+	}
+
+	// Check if the logged-in user is the creator of the collaboration
+	Collaboration* collaborationToDelete = collaborationsRepository->findCollaboration(name);
+	if (!collaborationToDelete) {
+		std::cout << "Collaboration not found." << std::endl;
+		return;
+	}
+
+	if (collaborationToDelete->getCreator() != loggedInUser->getUsername()) {
+		std::cout << "Only the creator of the collaboration can delete it." << std::endl;
+		return;
+	}
+
+	// Delete all tasks associated with the collaboration
+	MyVector<CollaborationTask>& tasks = collaborationToDelete->getCollaborationTasks();
+	size_t tasksCount = tasks.size();
+
+	for (size_t i = 0; i < tasksCount; i++) {
+		const Task& task = tasks[i].getTask();
+		collaborationsRepository->removeTaskFromCollaboration(name, task.getId());
+	}
+
+	// Remove the collaboration from the repository
+	collaborationsRepository->deleteCollaboration(name, collaborationToDelete->getCreator());
+
+	std::cout << "Collaboration deleted successfully!" << std::endl;
+}
+
+void Command::listCollaborations() {
+	const User* loggedInUser = usersRepository->getLoggedUserConst();
+	if (!loggedInUser) {
+		std::cout << "User is not logged in. Please log in or register." << std::endl;
+		return;
+	}
+
+	std::cout << "Collaborations for user " << loggedInUser->getUsername() << ":" << std::endl;
+
+	// Get all collaborations from the repository
+	const MyVector<Collaboration>& collaborations = collaborationsRepository->getCollaborations();
+
+	for (size_t i = 0; i < collaborations.size(); i++) {
+		const Collaboration& collaboration = collaborations[i];
+
+		// Check if the logged-in user is the creator or part of the work group
+		if (collaboration.getCreator() == loggedInUser->getUsername() ||
+			collaboration.isUserInWorkGroup(loggedInUser->getUsername())) {
+
+			std::cout << "Collaboration Name: " << collaboration.getName() << std::endl;
+			std::cout << "Collaboration ID: " << collaboration.getId() << std::endl;
+			std::cout << "Creator: " << collaboration.getCreator() << std::endl;
+			std::cout << std::endl;
+		}
+	}
+}
+
+void Command::addUser(const MyString& collabName, const MyString& username) {
+	const User* loggedInUser = usersRepository->getLoggedUserConst();
+	if (!loggedInUser) {
+		std::cout << "User is not logged in. Please log in or register." << std::endl;
+		return;
+	}
+
+	// Find the collaboration
+	Collaboration* collaboration = collaborationsRepository->findCollaboration(collabName);
+	if (!collaboration) {
+		std::cout << "Collaboration not found." << std::endl;
+		return;
+	}
+
+	// Check if the logged-in user is the creator of the collaboration
+	if (collaboration->getCreator() != loggedInUser->getUsername()) {
+		std::cout << "Only the creator of the collaboration can add users." << std::endl;
+		return;
+	}
+
+	// Check if the user is already in the work group
+	if (collaboration->isUserInWorkGroup(username)) {
+		std::cout << "User is already in the work group of collaboration." << std::endl;
+		return;
+	}
+
+	// Add the user to the work group of the collaboration
+	User userToAdd(username, loggedInUser->getPassword());
+	collaboration->addUser(userToAdd);
+
+	std::cout << "User added to collaboration."<< std::endl;
+}
+
+void Command::assignTask(const MyString& collabName, const MyString& username, const MyString& name, const std::tm& dueDate, const MyString& desc) {
+	const User* loggedInUser = usersRepository->getLoggedUserConst();
+	if (!loggedInUser) {
+		std::cout << "User is not logged in. Please log in or register." << std::endl;
+		return;
+	}
+
+	Collaboration* collaboration = collaborationsRepository->findCollaboration(collabName);
+	if (!collaboration) {
+		std::cout << "Collaboration not found." << std::endl;
+		return;
+	}
+
+	if (collaboration->getCreator() != loggedInUser->getUsername()) {
+		std::cout << "Only the creator of the collaboration can assign tasks." << std::endl;
+		return;
+	}
+
+	/*CollaborationTask newTask(name, dueDate, desc, collaboration->getCollaborationTasks());
+	newTask.setAssignee(username);
+	collaboration->addTask(newTask);*/
+	std::cout << "Task assigned successfully to " << username << "!" << std::endl;
+}
+
+void Command::listTasks(const MyString& collabName) {
+
 }
 
 void Command::logout() {

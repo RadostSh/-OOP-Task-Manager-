@@ -17,6 +17,10 @@ unsigned User::getUserID() const {
 	return _userID;
 }
 
+const MyString& User::getPassword() const {
+	return _password;
+}
+
 void User::setUsername(const MyString& username) {
 	if (username.getSize() < 3)
 	{

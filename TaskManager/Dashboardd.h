@@ -13,6 +13,9 @@ public:
 	void removeTask(unsigned id);
 	void updateDashboard(const MyVector<Task>& allTask, const std::tm& currentDate);
 
+	void writeToFile(std::ofstream& ofs) const;
+	void readFromFile(std::ifstream& ifs);
+
 private:
 	MyVector<Task> _tasks;
 	unsigned _indexOfUser;

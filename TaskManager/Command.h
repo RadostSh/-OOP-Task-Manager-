@@ -5,6 +5,7 @@
 #include "Dashboardd.h"
 #include "UsersRepository.h"
 #include "TasksRepository.h"
+#include "CollaborationRepository.h"
 #pragma warning(disable : 4996)
 
 class Command {
@@ -25,7 +26,17 @@ public:
 	void getTask(const MyString& name);
 	void getTask(unsigned id);
 
+	void listCompletedTasks();
+	void listDashboard();
 	void finishTask(unsigned id);
+
+	void addCollaboration(const MyString& name);
+	void deleteCollaboration(const MyString& name);
+	void listCollaborations();
+	void addUser(const MyString& collabName, const MyString& username);
+	void assignTask(const MyString& collabName, const MyString& username, const MyString& name, const std::tm& dueDate, const MyString& desc);
+	void listTasks(const MyString& collabName);
+
 	void logout();
 
 	void writeToFile() const;
@@ -35,6 +46,7 @@ public:
 protected:
 	UsersRepository* usersRepository;
 	TasksRepository* tasksRepository;
+	CollaborationsRepository* collaborationsRepository;
 private:
 	MyVector<User> _users;
 	MyVector<Task> _tasks;

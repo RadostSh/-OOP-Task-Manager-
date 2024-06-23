@@ -35,3 +35,11 @@ void Dashboard::updateDashboard(const MyVector<Task>& allTasks, const std::tm& c
         }
     }
 }
+
+void Dashboard::writeToFile(std::ofstream& ofs) const {
+
+}
+
+void Dashboard::readFromFile(std::ifstream& ifs) {
+
+}
