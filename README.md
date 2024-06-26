@@ -24,7 +24,7 @@ The Task Manager is a software system designed to help users create, edit, view,
 
 - **Create Collaboration**: Users can create shared projects (collaborations) and add tasks visible to all participants.
 - **Manage Collaboration**: Add or remove users, assign tasks within collaborations, and delete collaborations.
-- **Collaboration Dashboard**: View and manage all tasks within a collaboration, including assignees.
+- **Assignee**:  The assignee is responsible for managing and completing the task assigned to them within the collaboration.
 
 ## Command List
 
