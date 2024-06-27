@@ -48,25 +48,25 @@ bool Task::operator==(const Task& other) const {
 		_due_data.tm_mday == other._due_data.tm_mday;
 }
 
-const MyString& Task::getStatusStr() const {
+MyString Task::getStatusStr() const {
 	switch (_status) {
 	case Status::DONE:
-		return "DONE";
+		return MyString("DONE");
 	case Status::IN_PROCESS:
-		return "IN_PROCESS";
+		return MyString("IN_PROCESS");
 	case Status::ON_HOLD:
-		return "ON_HOLD";
+		return MyString("ON_HOLD");
 	case Status::OVERDUE:
-		return "OVERDUE";
+		return MyString("OVERDUE");
 	default:
-		return "Unknown";
+		return MyString("Unknown");
 	}
 }
 
 void Task::writeToFile(std::ofstream& ofs) const {
 	ofs.write((const char*)&_id, sizeof(int));
 	writeStringToFile(ofs, _name);
-	//writeTmToFile(ofs, _due_date);
+	ofs.write((const char*)&_due_data, sizeof(std::tm));
 	ofs.write((const char*)&_status, sizeof(Status));
 	writeStringToFile(ofs, _description);
 }
@@ -74,7 +74,15 @@ void Task::writeToFile(std::ofstream& ofs) const {
 void Task::readFromFile(std::ifstream& ifs) {
 	ifs.read((char*)&_id, sizeof(int));
 	_name = readStringFromFile(ifs);
-	//_due_date = readTmFromFile(ifs);
+	ifs.read((char*)&_due_data, sizeof(std::tm));
 	ifs.read((char*)&_status, sizeof(Status));
 	_description = readStringFromFile(ifs);
+}
+
+void mySwap(Task& first, Task& second) noexcept {
+	std::swap(first._id, second._id);
+	std::swap(first._name, second._name);
+	std::swap(first._due_data, second._due_data);
+	std::swap(first._status, second._status);
+	std::swap(first._description, second._description);
 }

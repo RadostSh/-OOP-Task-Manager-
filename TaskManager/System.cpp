@@ -23,7 +23,7 @@ void run() {
 
 			command.regist(username, password);
 			std::cout << std::endl;
-		} 
+		}
 		else if (commandText == "login") {
 			MyString username, password;
 			std::cout << "Username: ";
@@ -34,11 +34,8 @@ void run() {
 			command.login(username, password);
 			std::cout << std::endl;
 		}
-
-		//option choose - write later
-
 		else if (commandText == "add-task") {
-			char buff[1024]; 
+			char buff[1024];
 			std::cin.ignore();
 
 			std::cout << "Enter task name: ";
@@ -244,5 +241,5 @@ void run() {
 		else {
 			throw std::invalid_argument("Invalid command");
 		}
-	}	
+	}
 }

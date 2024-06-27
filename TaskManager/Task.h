@@ -22,10 +22,12 @@ public:
 	void setDescription(const MyString& desc);
 	bool operator==(const Task& other) const;
 
-	const MyString& getStatusStr() const;
+	MyString getStatusStr() const;
 
 	void writeToFile(std::ofstream& ofs) const;
 	void readFromFile(std::ifstream& ifs);
+
+	friend void mySwap(Task& first, Task& second) noexcept;
 
 private:
 	int _id;

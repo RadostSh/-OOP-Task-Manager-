@@ -36,6 +36,16 @@ Collaboration* CollaborationsRepository::findCollaboration(const MyString& name)
 	return nullptr;
 }
 
+CollaborationTask* CollaborationsRepository::findTask(const MyString& taskName) {
+	size_t length = _collaborationTask.size();
+	for (size_t i = 0; i < length; ++i) {
+		if (_collaborationTask[i].getName() == taskName) {
+			return &_collaborationTask[i];
+		}
+	}
+	return nullptr;
+}
+
 void CollaborationsRepository::removeTaskFromCollaboration(const MyString& collaborationName, unsigned taskId) {
 
 	Collaboration* collaboration = findCollaboration(collaborationName);

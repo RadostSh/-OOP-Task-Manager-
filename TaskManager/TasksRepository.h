@@ -17,6 +17,8 @@ public:
 
 	void finishTask(unsigned id);
 	const MyVector<Task>& getTask() const;
+	MyVector<Task>& getTask();
+
 private:
 	MyVector<Task> _tasks;
 	static TasksRepository* instance;

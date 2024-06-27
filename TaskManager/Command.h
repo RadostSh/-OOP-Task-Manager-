@@ -6,6 +6,7 @@
 #include "UsersRepository.h"
 #include "TasksRepository.h"
 #include "CollaborationRepository.h"
+#include "HelperFunctions.h"
 #pragma warning(disable : 4996)
 
 class Command {

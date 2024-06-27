@@ -2,6 +2,7 @@
 #include "User.h"
 #include "Task.h"
 #include "CollaborationTask.h"
+#include "SerializeFunction.h"
 
 class Collaboration {
 public:
@@ -15,7 +16,10 @@ public:
 
 	void addUser(const User& user);
 	bool isUserInWorkGroup(const MyString& username) const;
-	void addTask(const CollaborationTask* newTask);
+	void addTask(const CollaborationTask& newTask);
+
+	void writeToFile(std::ofstream& ofs) const;
+	void readFromFile(std::ifstream& ifs);
 
 private:
 	MyString _name;

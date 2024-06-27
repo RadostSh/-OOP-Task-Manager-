@@ -49,6 +49,10 @@ const MyVector<Task>& TasksRepository::getTask() const {
 	return _tasks;
 }
 
+MyVector<Task>& TasksRepository::getTask() {
+	return _tasks;
+}
+
 void TasksRepository::startTask(unsigned id) {
 	int index = findTaskIndex(id);
 	if (index != -1) {

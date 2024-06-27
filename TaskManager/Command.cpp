@@ -70,15 +70,14 @@ void Command::updateTaskName(const MyString& name) {
 
 	Task* task = tasksRepository->find(name);
 
-	std::cout << "Enter new task name: " << std::endl;
+	std::cout << "Enter new task name: ";
 	char buff[1024];
-	std::cin.ignore();
 	std::cin.getline(buff, 1024);
 	MyString newName = buff;
 
 	task->setName(newName);
 
-	std::cout << "Task with ID " << task->getId() << " has new name:" << task->getName();
+	std::cout << "Task with ID " << task->getId() << " has new name: " << task->getName();
 	std::cout << std::endl;
 }
 
@@ -91,9 +90,8 @@ void Command::updateTaskName(unsigned id) {
 
 	Task* task = tasksRepository->find(id);
 
-	std::cout << "Enter new task name: " << std::endl;
+	std::cout << "Enter new task name: ";
 	char buff[1024];
-	std::cin.ignore();
 	std::cin.getline(buff, 1024);
 	MyString newName = buff;
 
@@ -227,7 +225,7 @@ void Command::getTask(const MyString& name) {
 		return;
 	}
 
-	const MyVector<Task>& allTasks = tasksRepository->getTask();
+	MyVector<Task>& allTasks = tasksRepository->getTask();
 	unsigned tasksCount = allTasks.size();
 
 	for (size_t i = 0; i < tasksCount - 1; i++) {
@@ -240,7 +238,7 @@ void Command::getTask(const MyString& name) {
 		}
 
 		if (minIndex != i) {
-			//std::swap(allTasks[i], allTasks[minIndex]);
+			mySwap(allTasks[i], allTasks[minIndex]);
 		}
 	}
 
@@ -255,7 +253,7 @@ void Command::getTask(const MyString& name) {
 
 	std::cout << "Task name: " << task->getName() << std::endl;
 	std::cout << "Task ID: " << task->getId() << std::endl;
-	std::cout << "Due date: " << std::asctime(dueDate) << std::endl;
+	std::cout << "Due date: " << std::asctime(dueDate);
 	std::cout << "Status: " << task->getStatusStr() << std::endl;
 	std::cout << "Task desc: " << task->getDescription() << std::endl;
 }
@@ -278,9 +276,17 @@ void Command::getTask(unsigned id) {
 
 	std::cout << "Task name: " << task->getName() << std::endl;
 	std::cout << "Task ID: " << task->getId() << std::endl;
-	std::cout << "Due date: " << std::asctime(dueDate) << std::endl;
+	std::cout << "Due date: " << std::asctime(dueDate);
 	std::cout << "Status: " << task->getStatusStr() << std::endl;
 	std::cout << "Task desc: " << task->getDescription() << std::endl;
+}
+
+void Command::listCompletedTasks() {
+
+}
+
+void Command::listDashboard() {
+
 }
 
 void Command::finishTask(unsigned id) {
@@ -402,6 +408,13 @@ void Command::addUser(const MyString& collabName, const MyString& username) {
 		return;
 	}
 
+	// Find the user by username
+	User* userToAdd = usersRepository->getUser(username);
+	if (!userToAdd) {
+		std::cout << "User not found." << std::endl;
+		return;
+	}
+
 	// Check if the user is already in the work group
 	if (collaboration->isUserInWorkGroup(username)) {
 		std::cout << "User is already in the work group of collaboration." << std::endl;
@@ -409,8 +422,7 @@ void Command::addUser(const MyString& collabName, const MyString& username) {
 	}
 
 	// Add the user to the work group of the collaboration
-	User userToAdd(username, loggedInUser->getPassword());
-	collaboration->addUser(userToAdd);
+	collaboration->addUser(*userToAdd);
 
 	std::cout << "User added to collaboration."<< std::endl;
 }
@@ -428,14 +440,34 @@ void Command::assignTask(const MyString& collabName, const MyString& username, c
 		return;
 	}
 
-	if (collaboration->getCreator() != loggedInUser->getUsername()) {
-		std::cout << "Only the creator of the collaboration can assign tasks." << std::endl;
+	// Find the user by username
+	User* assignee = usersRepository->getUser(username);
+	if (!assignee) {
+		std::cout << "User not found." << std::endl;
 		return;
 	}
 
-	/*CollaborationTask newTask(name, dueDate, desc, collaboration->getCollaborationTasks());
-	newTask.setAssignee(username);
-	collaboration->addTask(newTask);*/
+	// Check if the user is in the work group
+	if (!collaboration->isUserInWorkGroup(username)) {
+
+		// Add the user to the work group
+		collaboration->addUser(*assignee);
+	}
+
+	// Find the task within the collaboration
+	CollaborationTask* task = collaborationsRepository->findTask(name);
+
+	if (!task) {
+
+		//Add task to collaboration
+		CollaborationTask newTask(name, dueDate, desc, collaboration->getId());
+		newTask.setAssignee(username);
+		collaboration->addTask(newTask);
+	}
+	else {
+		task->setAssignee(username);
+	}
+
 	std::cout << "Task assigned successfully to " << username << "!" << std::endl;
 }
 
@@ -458,14 +490,23 @@ void Command::writeToFile() const
 		throw "Error";
 
 	const MyVector<User>& users = usersRepository->getUsers();
-	unsigned countOfUsers = users.size();
-	ofs.write((const char*)&countOfUsers, sizeof(unsigned));
+	size_t countOfUsers = users.size();
+	ofs.write((const char*)&countOfUsers, sizeof(size_t));
 	for (int i = 0; i < countOfUsers; i++)
 		users[i].writeToFile(ofs);
-	/*size_t countOfTasks = _tasks.size();
-	ofs.write((const char*)&countOfTasks, sizeof(size_t));*/
-	/*for (int i = 0; i < countOfTasks; i++)
-		_tasks[i].writeToFile(ofs);*/
+
+	const MyVector<Task>& tasks = tasksRepository->getTask();
+	size_t countOfTasks = tasks.size();
+	ofs.write((const char*)&countOfTasks, sizeof(size_t));
+	for (int i = 0; i < countOfTasks; i++)
+		tasks[i].writeToFile(ofs);
+
+	const MyVector<Collaboration>& collaborations = collaborationsRepository->getCollaborations();
+	size_t countOfCollaborations = collaborations.size();
+	ofs.write((const char*)&countOfCollaborations, sizeof(size_t));
+	for (size_t i = 0; i < countOfCollaborations; i++) {
+		collaborations[i].writeToFile(ofs);
+	}
 
 	ofs.clear();
 	ofs.close();
@@ -476,21 +517,30 @@ void Command::readFromFile()
 	if (!ifs.is_open())
 		throw "Error";
 
-	unsigned countOfUsers = 0;
-	ifs.read((char*)&countOfUsers, sizeof(unsigned));
+	size_t countOfUsers = 0;
+	ifs.read((char*)&countOfUsers, sizeof(size_t));
 	for (int i = 0; i < countOfUsers; i++) {
 		User read;
 		read.readFromFile(ifs);
-		_users.push_back(read);
+		usersRepository->addUser(read);
 	}
-	/*size_t countOfTasks;
-	ifs.read((char*)&countOfTasks, sizeof(size_t));*/
-	//for (int i = 0; i < countOfTasks; i++)
-	//{
-	//	Task read;
-	//	read.readFromFiLe(ifs);
-	//	_tasks.push_back(read);
-	//}
+
+	size_t countOfTasks = 0;
+	ifs.read((char*)&countOfTasks, sizeof(size_t));
+	for (int i = 0; i < countOfTasks; i++)
+	{
+		Task read;
+		read.readFromFile(ifs);
+		tasksRepository->addTask(read);
+	}
+
+	size_t countOfCollaborations;
+	ifs.read((char*)&countOfCollaborations, sizeof(size_t));
+	for (size_t i = 0; i < countOfCollaborations; i++) {
+		Collaboration read;
+		read.readFromFile(ifs);
+		collaborationsRepository->addCollaboration(read);
+	}
 
 	ifs.clear();
 	ifs.close();

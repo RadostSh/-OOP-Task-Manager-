@@ -49,6 +49,17 @@ int UsersRepository::find(const MyString& username) const {
 	return -1;
 }
 
+User* UsersRepository::getUser(const MyString& username) {
+	unsigned usersCount = _users.size();
+
+	for (size_t i = 0; i < usersCount; i++) {
+		if (_users[i].getUsername() == username) {
+			return &_users[i];
+		}
+	}
+	return nullptr;
+}
+
 void UsersRepository::logInfo(const MyString& username, const MyString& password) {
 	int userIndex = find(username);
 

@@ -14,3 +14,17 @@ const MyString& CollaborationTask::getAssignee() const {
 void CollaborationTask::setAssignee(const MyString& assignee) {
 	_assignee = assignee;
 }
+
+const MyString& CollaborationTask::getName() const {
+	return Task::getName();
+}
+
+void CollaborationTask::writeToFile(std::ofstream& ofs) const {
+	Task::writeToFile(ofs);
+	writeStringToFile(ofs, _assignee);
+}
+
+void CollaborationTask::readFromFile(std::ifstream& ifs) {
+	Task::readFromFile(ifs);
+	_assignee = readStringFromFile(ifs);
+}

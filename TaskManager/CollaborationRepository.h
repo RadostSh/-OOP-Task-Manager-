@@ -10,6 +10,7 @@ public:
     void addCollaboration(const Collaboration& collaboration);
     void deleteCollaboration(const MyString& name, const MyString& creator);
     Collaboration* findCollaboration(const MyString& name);
+    CollaborationTask* findTask(const MyString& taskName);
 
     void removeTaskFromCollaboration(const MyString& collaborationName, unsigned taskId);
 
@@ -17,5 +18,6 @@ public:
 
 private:
     MyVector<Collaboration> _collaborations;
+    MyVector<CollaborationTask> _collaborationTask;
     static CollaborationsRepository* instance;
 };

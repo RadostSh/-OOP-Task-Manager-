@@ -13,6 +13,7 @@ public:
 	void addUser(const User& user);
 	User* find(int userID);
 	int find(const MyString& username) const;
+	User* getUser(const MyString& username);
 	void logInfo(const MyString& username, const MyString& password);
 	const User* getLoggedUserConst() const; //not change user data
 	User* getLoggedUser(); // change user data
