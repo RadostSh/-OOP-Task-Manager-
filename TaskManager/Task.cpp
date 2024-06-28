@@ -29,6 +29,10 @@ const MyString& Task::getDescription() const {
 	return _description;
 }
 
+bool Task::isCompleted() const {
+	return _status == Status::DONE;
+}
+
 void Task::setName(const MyString& name) {
 	_name = name;
 }

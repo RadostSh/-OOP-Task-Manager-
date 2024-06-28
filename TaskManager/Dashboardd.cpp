@@ -35,3 +35,28 @@ void Dashboard::updateDashboard(const MyVector<Task>& allTasks, const std::tm& c
         }
     }
 }
+
+void Dashboard::updateDashboardForDate(const MyVector<Task>& allTasks, const std::tm& specificDate) {
+    _tasks.clear();
+    for (size_t i = 0; i < allTasks.size(); i++) {
+        if (isSameDate(allTasks[i].getDueDate(), specificDate)) {
+            _tasks.push_back(allTasks[i]);
+        }
+    }
+}
+
+void Dashboard::listTasksDueToday() const {
+
+    std::time_t t = std::time(nullptr);
+    std::tm currentDate = *std::localtime(&t);
+
+    for (size_t i = 0; i < _tasks.size(); ++i) {
+        if (isToday(_tasks[i].getDueDate())) {
+            std::cout << "Task Name: " << _tasks[i].getName() << std::endl;
+            std::cout << "Task ID: " << _tasks[i].getId() << std::endl;
+            std::cout << "Task Due Date: " << std::put_time(&_tasks[i].getDueDate(), "%Y-%m-%d");
+            std::cout << "Task Description: " << _tasks[i].getDescription() << std::endl;
+            std::cout << std::endl;
+        }
+    }
+}

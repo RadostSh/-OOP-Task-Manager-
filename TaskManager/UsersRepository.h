@@ -2,11 +2,10 @@
 #include "User.h"
 #include "Task.h"
 #include "Dashboardd.h"
-#include "TasksRepository.h"
 
 class UsersRepository {
 public: 
-	UsersRepository();
+	UsersRepository() = default;
 	static UsersRepository* getInstance();
 	static void freeInstance();
 
@@ -19,8 +18,16 @@ public:
 	User* getLoggedUser(); // change user data
 	void logOutUser();
 	const MyVector<User> getUsers() const;
-protected:
-	TasksRepository* tasksRepository;
+
+	int findTaskIndex(int id);
+	Task* findTask(int id);
+	Task* findTask(const MyString& name);
+
+	void addTask(const Task& task);
+	void startTask(unsigned id);
+	void deleteTask(unsigned id);
+	void finishTask(unsigned id);
+
 private:
 	MyVector<User> _users;
 	int loggedUser = -1;

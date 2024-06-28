@@ -135,9 +135,27 @@ void run() {
 			}
 			std::cout << std::endl;
 		}
-		else if (commandText == "list-tasks") {
-			std::cout << "Enter date or username: ";
+		else if (commandText == "list-tasks-by-date") {
+			char buff[1024];
+			std::cin.ignore();
+			std::cout << "Enter date (YYYY-MM-DD): ";
+			std::cin.getline(buff, 1024);
+			MyString dateStr = buff;
+			std::tm date = {};
+			std::istringstream ss(dateStr.c_str());
+			ss >> std::get_time(&date, "%Y-%m-%d");
 
+			if (ss.fail()) {
+				std::cout << "Date format is invalid! Please use YYYY-MM-DD" << std::endl;
+				return;
+			}
+
+			command.listTasks(date);
+			std::cout << std::endl;
+		}
+		else if (commandText == "list-all-tasks") {
+			command.listAllTasks();
+			std::cout << std::endl;
 		}
 		else if (commandText == "list-completed-tasks") {
 			command.listCompletedTasks();
@@ -224,7 +242,7 @@ void run() {
 			std::cout << std::endl;
 
 		}
-		else if (commandText == "list-tasks") {
+		else if (commandText == "list-tasks-by-collabName") {
 			MyString collabName;
 			std::cout << "Collaboration name: ";
 			std::cin >> collabName;

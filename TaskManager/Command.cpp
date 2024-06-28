@@ -2,7 +2,6 @@
 
 Command::Command() {
 	usersRepository = UsersRepository::getInstance();
-	tasksRepository = TasksRepository::getInstance();
 	collaborationsRepository = CollaborationsRepository::getInstance();
 }
 
@@ -14,7 +13,6 @@ void Command::regist(const MyString& username, const MyString& password) {
 
 	if (usersRepository->find(username) != -1) {
 		std::cout << "Username already exsits!" << std::endl;
-		std::cout << std::endl;
 		return;
 	}
 
@@ -44,11 +42,6 @@ void Command::addTask(const MyString& name, const std::tm& dueDate, const MyStri
 		return;
 	}
 
-	if (tasksRepository->find(name)) {
-		std::cout << "Task already exsits!" << std::endl;
-		std::cout << std::endl;
-		return;
-	}
 	static bool isRandInitialized = false;
 	if (!isRandInitialized) {
 		srand(time(NULL));
@@ -57,7 +50,7 @@ void Command::addTask(const MyString& name, const std::tm& dueDate, const MyStri
 	int id = rand();
 
 	Task task(name, dueDate, desc, id);
-	tasksRepository->addTask(task);
+	usersRepository->addTask(task);
 	std::cout << "Task added successfully!" << std::endl;
 }
 
@@ -68,7 +61,7 @@ void Command::updateTaskName(const MyString& name) {
 		return;
 	}
 
-	Task* task = tasksRepository->find(name);
+	Task* task = usersRepository->findTask(name);
 
 	std::cout << "Enter new task name: ";
 	char buff[1024];
@@ -88,7 +81,7 @@ void Command::updateTaskName(unsigned id) {
 		return;
 	}
 
-	Task* task = tasksRepository->find(id);
+	Task* task = usersRepository->findTask(id);
 
 	std::cout << "Enter new task name: ";
 	char buff[1024];
@@ -97,7 +90,7 @@ void Command::updateTaskName(unsigned id) {
 
 	task->setName(newName);
 
-	std::cout << "Task with ID " << task->getId() << " has new name:" << task->getName();
+	std::cout << "Task with ID " << task->getId() << " has new name: " << task->getName();
 	std::cout << std::endl;
 }
 
@@ -108,7 +101,7 @@ void Command::startTask(unsigned id) {
 		return;
 	}
 
-	tasksRepository->startTask(id);
+	usersRepository->startTask(id);
 	std::cout << "Task started successfully!" << std::endl;
 }
 
@@ -119,7 +112,7 @@ void Command::updateTaskDescription(const MyString& name) {
 		return;
 	}
 
-	Task* task = tasksRepository->find(name);
+	Task* task = usersRepository->findTask(name);
 
 	std::cout << "Enter new task description: " << std::endl;
 	char buff[1024];
@@ -140,7 +133,7 @@ void Command::updateTaskDescription(unsigned id) {
 		return;
 	}
 
-	Task* task = tasksRepository->find(id);
+	Task* task = usersRepository->findTask(id);
 
 	std::cout << "Enter new task description: " << std::endl;
 	char buff[1024];
@@ -161,7 +154,7 @@ void Command::addTaskToDashboard(unsigned id) {
 		return;
 	}
 
-	Task* task = tasksRepository->find(id);
+	Task* task = usersRepository->findTask(id);
 
 	if (!task) {
 		std::cout << "Task not found!" << std::endl;
@@ -187,7 +180,7 @@ void Command::removeTaskFromDashboard(unsigned id) {
 		return;
 	}
 
-	Task* task = tasksRepository->find(id);
+	Task* task = usersRepository->findTask(id);
 	if (!task) {
 		std::cout << "Task with ID " << id << " not found!" << std::endl;
 		return;
@@ -208,24 +201,25 @@ void Command::deleteTask(unsigned id) {
 		return;
 	}
 
-	Task* task = tasksRepository->find(id);
+	Task* task = usersRepository->findTask(id);
 	if (!task) {
 		std::cout << "Task with ID " << id << " not found!" << std::endl;
 		return;
 	}
 
-	tasksRepository->deleteTask(id);
+	usersRepository->deleteTask(id);
 	std::cout << "Task delete successfully!" << std::endl;
 }
 
 void Command::getTask(const MyString& name) {
-	const User* user = usersRepository->getLoggedUserConst();
+	User* user = usersRepository->getLoggedUser();
 	if (!user) {
 		std::cout << "User is not logged! Please, log in or register new user!" << std::endl;
 		return;
 	}
 
-	MyVector<Task>& allTasks = tasksRepository->getTask();
+	MyVector<Task>& allTasks = user->getTask();
+
 	unsigned tasksCount = allTasks.size();
 
 	for (size_t i = 0; i < tasksCount - 1; i++) {
@@ -242,7 +236,7 @@ void Command::getTask(const MyString& name) {
 		}
 	}
 
-	Task* task = tasksRepository->find(name);
+	Task* task = usersRepository->findTask(name);
 
 	if (!task) {
 		std::cout << "Task with name \"" << name << "\" not found!" << std::endl;
@@ -265,7 +259,7 @@ void Command::getTask(unsigned id) {
 		return;
 	}
 
-	Task* task = tasksRepository->find(id);
+	Task* task = usersRepository->findTask(id);
 
 	if (!task) {
 		std::cout << "Task with ID " << id << " not found!" << std::endl;
@@ -281,12 +275,101 @@ void Command::getTask(unsigned id) {
 	std::cout << "Task desc: " << task->getDescription() << std::endl;
 }
 
-void Command::listCompletedTasks() {
+void Command::listTasks(const std::tm& dueDate) {
+	const User* loggedInUser = usersRepository->getLoggedUserConst();
+	if (!loggedInUser) {
+		std::cout << "User is not logged in. Please log in or register." << std::endl;
+		return;
+	}
 
+	bool found = false;
+	for (size_t i = 0; i < _tasks.size(); i++) {
+		const Task& task = _tasks[i];
+		if (isSameDate(task.getDueDate(), dueDate)) {
+			found = true;
+			std::cout << "Task Name: " << task.getName() << std::endl;
+			std::cout << "Task ID: " << task.getId() << std::endl;
+			std::cout << "Due Date: " << std::asctime(&task.getDueDate());
+			std::cout << "Status: " << task.getStatusStr() << std::endl;
+			std::cout << "Description: " << task.getDescription() << std::endl;
+			std::cout << "-------------------------" << std::endl;
+		}
+	}
+
+	if (!found) {
+		std::cout << "No tasks due on this date." << std::endl;
+	}
+}
+
+void Command::listAllTasks() {
+	const User* loggedInUser = usersRepository->getLoggedUserConst();
+	if (!loggedInUser) {
+		std::cout << "User is not logged in. Please log in or register." << std::endl;
+		return;
+	}
+
+	const MyVector<Task>& allTasks = loggedInUser->getTask();
+
+	for (size_t i = 0; i < allTasks.size(); i++) {
+		const Task& task = allTasks[i];
+		std::cout << "Task Name: " << task.getName() << std::endl;
+		std::cout << "Task ID: " << task.getId() << std::endl;
+		std::cout << "Due Date: " << std::asctime(&task.getDueDate());
+		std::cout << "Task Status: " << task.getStatusStr() << std::endl;
+		std::cout << "Task Description: " << task.getDescription() << std::endl;
+		std::cout << "-------------------------" << std::endl;
+	}
+}
+
+void Command::listCompletedTasks() {
+	const User* loggedInUser = usersRepository->getLoggedUserConst();
+	if (!loggedInUser) {
+		std::cout << "User is not logged in. Please log in or register." << std::endl;
+		return;
+	}
+
+	const MyString& username = loggedInUser->getUsername();
+	const MyVector<Task>& tasks = loggedInUser->getTask();
+
+	std::cout << "Completed tasks for user '" << username << "':" << std::endl;
+	bool found = false;
+	for (size_t i = 0; i < tasks.size(); ++i) {
+		const Task& task = tasks[i];
+		if (task.isCompleted()) {
+			found = true;
+			std::cout << "Task Name: " << task.getName() << std::endl;
+			std::cout << "Task ID: " << task.getId() << std::endl;
+			std::cout << "Due Date: " << std::asctime(&task.getDueDate());
+			std::cout << "Description: " << task.getDescription() << std::endl;
+			std::cout << "-------------------------" << std::endl;
+		}
+	}
+
+	if (!found) {
+		std::cout << "No completed tasks found for user '" << username << "'." << std::endl;
+	}
 }
 
 void Command::listDashboard() {
+	const User* loggedInUser = usersRepository->getLoggedUserConst();
+	if (!loggedInUser) {
+		std::cout << "User is not logged in. Please log in or register." << std::endl;
+		return;
+	}
 
+	unsigned userId = loggedInUser->getUserID();
+	Dashboard dashboard(userId);
+
+	const MyVector<Task>& allTasks = loggedInUser->getTask();
+
+	std::time_t now = std::time(nullptr);
+	std::tm* currentDate = std::localtime(&now);
+
+	// Update the dashboard with today's tasks
+	dashboard.updateDashboard(allTasks, *currentDate);
+
+	// List tasks due today
+	dashboard.listTasksDueToday();
 }
 
 void Command::finishTask(unsigned id) {
@@ -296,7 +379,7 @@ void Command::finishTask(unsigned id) {
 		return;
 	}
 
-	tasksRepository->startTask(id);
+	usersRepository->finishTask(id);
 	std::cout << "Task finished successfully!" << std::endl;
 }
 
@@ -379,11 +462,7 @@ void Command::listCollaborations() {
 		// Check if the logged-in user is the creator or part of the work group
 		if (collaboration.getCreator() == loggedInUser->getUsername() ||
 			collaboration.isUserInWorkGroup(loggedInUser->getUsername())) {
-
-			std::cout << "Collaboration Name: " << collaboration.getName() << std::endl;
-			std::cout << "Collaboration ID: " << collaboration.getId() << std::endl;
-			std::cout << "Creator: " << collaboration.getCreator() << std::endl;
-			std::cout << std::endl;
+			std::cout << "Collaboration name: " << collaboration.getName() << std::endl;
 		}
 	}
 }
@@ -463,6 +542,7 @@ void Command::assignTask(const MyString& collabName, const MyString& username, c
 		CollaborationTask newTask(name, dueDate, desc, collaboration->getId());
 		newTask.setAssignee(username);
 		collaboration->addTask(newTask);
+		usersRepository->addTask(newTask);
 	}
 	else {
 		task->setAssignee(username);
@@ -472,7 +552,22 @@ void Command::assignTask(const MyString& collabName, const MyString& username, c
 }
 
 void Command::listTasks(const MyString& collabName) {
+	Collaboration* collaboration = collaborationsRepository->findCollaboration(collabName);
+	if (!collaboration) {
+		std::cout << "Collaboration '" << collabName << "' not found." << std::endl;
+		return;
+	}
 
+	const MyVector<CollaborationTask>& tasks = collaboration->getCollaborationTasks();
+	for (size_t i = 0; i < tasks.size(); i++) {
+		const CollaborationTask& task = tasks[i];
+		std::cout << "Task Name: " << task.getName() << std::endl;
+		std::cout << "Task ID: " << task.getId() << std::endl;
+		std::cout << "Due Date: " << std::asctime(&task.getDueDate());
+		std::cout << "Description: " << task.getDescription() << std::endl;
+		std::cout << "Assignee: " << task.getAssignee() << std::endl;
+		std::cout << "-------------------------" << std::endl;
+	}
 }
 
 void Command::logout() {
@@ -486,20 +581,16 @@ void Command::logout() {
 void Command::writeToFile() const
 {
 	std::ofstream ofs("TaskManager.dat", std::ios::out | std::ios::binary);
-	if (!ofs.is_open())
+	if (!ofs.is_open()) {
 		throw "Error";
+	}
 
 	const MyVector<User>& users = usersRepository->getUsers();
 	size_t countOfUsers = users.size();
 	ofs.write((const char*)&countOfUsers, sizeof(size_t));
-	for (int i = 0; i < countOfUsers; i++)
+	for (int i = 0; i < countOfUsers; i++) {
 		users[i].writeToFile(ofs);
-
-	const MyVector<Task>& tasks = tasksRepository->getTask();
-	size_t countOfTasks = tasks.size();
-	ofs.write((const char*)&countOfTasks, sizeof(size_t));
-	for (int i = 0; i < countOfTasks; i++)
-		tasks[i].writeToFile(ofs);
+	}
 
 	const MyVector<Collaboration>& collaborations = collaborationsRepository->getCollaborations();
 	size_t countOfCollaborations = collaborations.size();
@@ -514,8 +605,9 @@ void Command::writeToFile() const
 void Command::readFromFile()
 {
 	std::ifstream ifs("TaskManager.dat", std::ios::in | std::ios::binary);
-	if (!ifs.is_open())
+	if (!ifs.is_open()) {
 		throw "Error";
+	}
 
 	size_t countOfUsers = 0;
 	ifs.read((char*)&countOfUsers, sizeof(size_t));
@@ -525,16 +617,7 @@ void Command::readFromFile()
 		usersRepository->addUser(read);
 	}
 
-	size_t countOfTasks = 0;
-	ifs.read((char*)&countOfTasks, sizeof(size_t));
-	for (int i = 0; i < countOfTasks; i++)
-	{
-		Task read;
-		read.readFromFile(ifs);
-		tasksRepository->addTask(read);
-	}
-
-	size_t countOfCollaborations;
+	size_t countOfCollaborations = 0;
 	ifs.read((char*)&countOfCollaborations, sizeof(size_t));
 	for (size_t i = 0; i < countOfCollaborations; i++) {
 		Collaboration read;

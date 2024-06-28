@@ -64,40 +64,61 @@ The Task Manager is a software system designed to help users create, edit, view,
 
 ```c++
 // Register a new user
-> register user123 123
+> signup
+Username(Username must be at least 3 symbols): user123 
+Password(Password must be at least 8 symbols): 12345678
 Registered successfully!
 
 // Log in as the new user
-> login user123 123
+> login user123 12345678
 Welcome back user123!
 
 // Add a new task
-> add-task OOP_HW 2024-03-14 "oop hw desc"
+> add-task OOP_HW 2024-03-17 "oop hw desc"
+Task added successfully!
+    
+// Add a new task
+> add-task OOP_HW 2024-03-24 "oop oop"
 Task added successfully!
 
+// List all tasks for the current user
+> list-all-tasks
+Task Name: OOP_HW
+Task ID: 26678
+Due Date: Sun Mar 17 00:00:00 2024
+Task Status: ON_HOLD
+Task Description: oop hw desc
+-------------------------
+Task Name: OOP_HW
+Task ID: 3228
+Due Date: Sun Mar 24 00:00:00 2024
+Task Status: ON_HOLD
+Task Description: oop oop
+-------------------------
+    
 // Retrieve task details by name
 > get-task OOP_HW
-Task name: OOP_HW
-Task ID: 1
-Due date: Thu Mar 14 00:00:00 2024
-Status: ON HOLD
-Task desc: oop hw desc
+Task Name: OOP_HW
+Task ID: 3228 (same name, but with a smaller index)
+Due Date: Sun Mar 17 00:00:00 2024
+Task Status: ON_HOLD
+Task Description: oop oop
 
 // Update the task name
-> update-task-name 1 OOP_PR
-Task name updated successfully!
+> update-task-name 26678 OOP_PR
+Task with ID 26678 has new name: OOP_PR
 
 // Mark the task as in process
-> start-task 1
+> start-task 26678
 Task started successfully!
 
 // Retrieve task details by ID
-> get-task 1
+> get-task 26678
 Task name: OOP_PR
-Task ID: 1
+Task ID: 26678
 Due date: Thu Mar 14 00:00:00 2024
+Status: IN_PROCESS
 Task desc: oop hw desc 
-Status: IN PROCESS
 
 // Create a new collaboration
 > add-collaboration collab
@@ -105,98 +126,71 @@ Collaboration added successfully!
 
 // Add a user to the collaboration
 > add-user collab user567
-User added successfully to collab!
+User added to collaboration!
 
 // Assign a task to a user within the collaboration
-> assign-task collab user567 Group_project 2024-03-15 "example desc"
+> assign-task collab user567 Group_project 2024-03-17 "example desc"
 Task assigned successfully to user567!
 
 // Log out
 > logout
-Logged out successfully!
+Logged out! Goodbye!
 
 // Log in as the new user
-> login user567 567
+> login user567 66666666
 Welcome back user567!
-
-// List all tasks for the current user
-> list-tasks
-Task name: Group_project
-Task ID: 1287
-Due date: Fri Mar 15 00:00:00 2024
-Task desc: example desc
-Status: ON HOLD
 
 // List all collaborations the user is part of
 > list-collaborations
-collab
+Collaborations for user user567:
+Collaboration name: collab
 
 // List all tasks within a collaboration
-> list-tasks collab
-Tasks for collab:
-Task name: Group_project
-Task ID: 1287
-Due date: Fri Mar 15 00:00:00 2024
-Task desc: example desc
-Status: ON HOLD
+> list-tasks-by-collabName collab
+Collaboration name: collab
+Task Name: Group_project
+Task ID: 27570
+Due Date: Sun Mar 17 00:00:00 2024
+Description: example desc
 Assignee: user567
+-------------------------
 
 // Add another task
-> add-task OOP_test 2024-03-15 "test desc"
+> add-task OOP_test 2024-03-17 "test desc"
 Task added successfully!
 
 // Retrieve task details by name
 > get-task OOP_test
 Task name: OOP_test
-Task ID: 1299
-Due date: Fri Mar 15 00:00:00 2024
+Task ID: 21191
+Due date: Sun Mar 17 00:00:00 2024
+Status: ON_HOLD
 Task desc: test desc
-Status: ON HOLD
-
-// Add a task to the dashboard
-> add-task-to-dashboard 1287
-Task added to dashboard successfully!
-
-// List all tasks in the dashboard for today
-> list-dashboard
-Dashboard:
-Task name: Group_project
-Task ID: 1287
-Due date: Fri Mar 15 00:00:00 2024
-Task desc: example desc
-Status: ON HOLD
-Assignee: user567
-
-// List all tasks due on a specific date
-> list-tasks 2024-03-15
-Task name: Group_project
-Task ID: 1287
-Due date: Fri Mar 15 00:00:00 2024
-Task desc: example desc
-Status: ON HOLD
-Assignee: user567
-
-Task name: OOP_test
-Task ID: 1299
-Due date: Fri Mar 15 00:00:00 2024
-Task desc: test desc
-Status: ON HOLD
 
 // Mark a task as completed
-> finish-task 1299
-Congratulations on completing the task!
+> finish-task 21191
+Task finished successfully!
+    
+>get-task 21191
+Task name: OOP_test
+Task ID: 21191
+Due date: Sun Mar 17 00:00:00 2024
+Status: DONE
+Task desc: oop test
 
 // Delete a task
-> delete-task 1299
+> delete-task 21191
 Task deleted successfully!
+    
+>get-task 21191
+Task with ID 21191 not found!
 
 // Log out
 > logout
-Logged out successfully!
+Logged out! Goodbye!
 
 // Exit the program
 > exit
-Exited successfully!
 ```
 
 These examples cover all the options of the Task Manager, providing a clear understanding of the user input, program output, and real-world scenarios where the tool can be applied.

@@ -4,7 +4,6 @@
 #include "Task.h"
 #include "Dashboardd.h"
 #include "UsersRepository.h"
-#include "TasksRepository.h"
 #include "CollaborationRepository.h"
 #include "HelperFunctions.h"
 #pragma warning(disable : 4996)
@@ -26,7 +25,8 @@ public:
 	void deleteTask(unsigned id);
 	void getTask(const MyString& name);
 	void getTask(unsigned id);
-
+	void listTasks(const std::tm& dueDate);
+	void listAllTasks();
 	void listCompletedTasks();
 	void listDashboard();
 	void finishTask(unsigned id);
@@ -46,7 +46,6 @@ public:
 	~Command();
 protected:
 	UsersRepository* usersRepository;
-	TasksRepository* tasksRepository;
 	CollaborationsRepository* collaborationsRepository;
 private:
 	MyVector<User> _users;

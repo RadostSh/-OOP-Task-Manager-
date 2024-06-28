@@ -2,7 +2,8 @@
 #include <ctime>
 #include <iomanip>
 #include <sstream>
-#include "User.h"
+#include "MyString.h"
+#include "MyVector.hpp"
 #include "Status.h"
 
 
@@ -16,6 +17,7 @@ public:
 	const std::tm& getDueDate() const;
 	Status getStatus() const;
 	const MyString& getDescription() const;
+	bool isCompleted() const;
 
 	void setNewStatus(Status status);
 	void setName(const MyString& name);

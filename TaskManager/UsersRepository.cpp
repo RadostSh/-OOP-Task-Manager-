@@ -1,9 +1,5 @@
 #include "UsersRepository.h"
 
-UsersRepository::UsersRepository() {
-	tasksRepository = TasksRepository::getInstance();
-}
-
 UsersRepository* UsersRepository::instance = nullptr;
 
 UsersRepository* UsersRepository::getInstance() {
@@ -81,7 +77,7 @@ void UsersRepository::logInfo(const MyString& username, const MyString& password
 		
 		unsigned indexOfUser = user.getUserID();
 		Dashboard dashboard(indexOfUser);
-		dashboard.updateDashboard(tasksRepository->getTask(), currentDate);
+		dashboard.updateDashboard(user.getTask(), currentDate);
 
 		return;
 	}
@@ -103,4 +99,68 @@ void UsersRepository::logOutUser() {
 
 const MyVector<User> UsersRepository::getUsers() const {
 	return _users;
+}
+
+int UsersRepository::findTaskIndex(int id) {
+	unsigned usersCount = _users.size();
+
+	for (size_t i = 0; i < usersCount; i++) {
+		User& user = _users[i];
+		return user.findTaskIndex(id);
+	}
+}
+
+Task* UsersRepository::findTask(int id) {
+	unsigned usersCount = _users.size();
+
+	for (size_t i = 0; i < usersCount; i++) {
+		User& user = _users[i];
+		return user.find(id);
+	}
+}
+
+Task* UsersRepository::findTask(const MyString& name) {
+	unsigned usersCount = _users.size();
+
+	for (size_t i = 0; i < usersCount; i++) {
+		User& user = _users[i];
+		return user.find(name);
+	}
+}
+
+void UsersRepository::addTask(const Task& task) {
+	unsigned usersCount = _users.size();
+
+	for (size_t i = 0; i < usersCount; i++) {
+		User& user = _users[i];
+		return user.addTask(task);
+	}
+}
+
+void UsersRepository::startTask(unsigned id) {
+	unsigned usersCount = _users.size();
+
+	for (size_t i = 0; i < usersCount; i++) {
+		User& user = _users[i];
+		user.startTask(id);
+	}
+}
+
+void UsersRepository::deleteTask(unsigned id) {
+
+	unsigned usersCount = _users.size();
+
+	for (size_t i = 0; i < usersCount; i++) {
+		User& user = _users[i];
+		user.deleteTask(id);
+	}
+}
+
+void UsersRepository::finishTask(unsigned id) {
+	unsigned usersCount = _users.size();
+
+	for (size_t i = 0; i < usersCount; i++) {
+		User& user = _users[i];
+		user.finishTask(id);
+	}
 }

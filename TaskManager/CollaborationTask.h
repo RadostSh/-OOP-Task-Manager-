@@ -3,7 +3,7 @@
 #include "Task.h"
 #include "SerializeFunction.h"
 
-class CollaborationTask : Task {
+class CollaborationTask : public Task {
 public:
 	CollaborationTask() = default;
 	CollaborationTask(const MyString& name, const std::tm& dueDate, const MyString& description, unsigned id);
