@@ -581,9 +581,6 @@ void Command::logout() {
 void Command::writeToFile() const
 {
 	std::ofstream ofs("TaskManager.dat", std::ios::out | std::ios::binary);
-	if (!ofs.is_open()) {
-		throw "Error";
-	}
 
 	const MyVector<User>& users = usersRepository->getUsers();
 	size_t countOfUsers = users.size();
